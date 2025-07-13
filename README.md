@@ -2,6 +2,32 @@
 
 Personal configuration files for my development environment.
 
+**✨ Cross-distribution compatible** - Works on Ubuntu, Debian, Fedora, CentOS, Arch, openSUSE, and macOS!
+
+## Quick Deploy on Any System
+
+### One-liner Bootstrap (Recommended)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/idunkoncode/dotfiles/master/scripts/bootstrap.sh | bash
+```
+
+### Manual Installation
+
+```bash
+git clone https://github.com/idunkoncode/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+./scripts/install.sh
+```
+
+## Supported Distributions
+
+- **Ubuntu/Debian** (apt)
+- **Fedora/RHEL/CentOS** (dnf/yum)
+- **Arch Linux/Manjaro** (pacman)
+- **openSUSE** (zypper)
+- **macOS** (homebrew)
+
 ## Structure
 
 ```
