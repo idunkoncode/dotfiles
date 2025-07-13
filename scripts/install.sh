@@ -33,14 +33,27 @@ echo "📁 Installing config files..."
 create_symlink "$DOTFILES_DIR/config/fish" "$CONFIG_DIR/fish"
 create_symlink "$DOTFILES_DIR/config/ghostty" "$CONFIG_DIR/ghostty"
 
+# Install config files for git
+if [ -d "$DOTFILES_DIR/config/git" ]; then
+    create_symlink "$DOTFILES_DIR/config/git" "$CONFIG_DIR/git"
+fi
+
 # Install home directory files
 echo "🏠 Installing home directory files..."
 create_symlink "$DOTFILES_DIR/home/.bashrc" "$HOME/.bashrc"
 create_symlink "$DOTFILES_DIR/home/.profile" "$HOME/.profile"
 
-# Check if git config exists and install it
+# Check if additional configs exist and install them
 if [ -f "$DOTFILES_DIR/home/.gitconfig" ]; then
     create_symlink "$DOTFILES_DIR/home/.gitconfig" "$HOME/.gitconfig"
+fi
+
+if [ -f "$DOTFILES_DIR/home/.vimrc" ]; then
+    create_symlink "$DOTFILES_DIR/home/.vimrc" "$HOME/.vimrc"
+fi
+
+if [ -f "$DOTFILES_DIR/home/.tmux.conf" ]; then
+    create_symlink "$DOTFILES_DIR/home/.tmux.conf" "$HOME/.tmux.conf"
 fi
 
 echo "✅ Dotfiles installation complete!"
