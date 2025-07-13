@@ -1,0 +1,19 @@
+# Ignore fish shell generated files
+config/fish/fish_variables
+config/fish/fishd.*
+
+# Ignore backup files
+*.backup
+*.bak
+*~
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore local configuration
+local/
+private/
+
+# Ignore log files
+*.log

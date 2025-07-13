@@ -1,0 +1,61 @@
+[core]
+	editor = nano
+	autocrlf = input
+	safecrlf = true
+	excludesfile = ~/.config/git/ignore
+
+[color]
+	ui = auto
+	branch = auto
+	diff = auto
+	status = auto
+
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan
+
+[push]
+	default = simple
+
+[pull]
+	rebase = false
+
+[init]
+	defaultBranch = main
+
+[alias]
+	# Basic shortcuts
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+	df = diff
+	dc = diff --cached
+	
+	# Logging
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	lga = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --all
+	
+	# Useful shortcuts
+	unstage = reset HEAD --
+	last = log -1 HEAD
+	visual = !gitk
+	
+	# Stashing
+	save = stash save
+	pop = stash pop
+	
+	# Branch management
+	cleanup = "!git branch --merged | grep -v '\\*\\|main\\|master\\|develop' | xargs -n 1 git branch -d"
