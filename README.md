@@ -9,13 +9,19 @@ Personal configuration files for my development environment.
 ├── config/          # XDG config files
 │   ├── fish/        # Fish shell configuration
 │   ├── git/         # Git configuration
-│   └── ghostty/     # Ghostty terminal configuration
+│   ├── ghostty/     # Ghostty terminal configuration
+│   └── oh-my-posh/  # Oh My Posh theme configuration
 ├── home/            # Home directory dotfiles
 │   ├── .bashrc
 │   ├── .profile
-│   └── .gitconfig
+│   ├── .gitconfig
+│   ├── .vimrc
+│   └── .tmux.conf
 ├── scripts/         # Utility scripts
-│   └── install.sh   # Installation script
+│   ├── install.sh   # Installation script
+│   ├── backup.sh    # Backup script
+│   ├── sync.sh      # Sync script
+│   └── update.sh    # Update script
 └── README.md
 ```
 
@@ -38,6 +44,25 @@ ln -sf ~/.dotfiles/config/git ~/.config/git
 # Create symlinks for home directory files
 ln -sf ~/.dotfiles/home/.bashrc ~/.bashrc
 ln -sf ~/.dotfiles/home/.profile ~/.profile
+```
+
+## Oh My Posh
+
+This configuration includes Oh My Posh with a custom bubblesline theme that shows:
+- Current path with folder icon
+- Git branch information
+- Programming language versions (Python, Go, Node, Ruby, Java, Julia, Rust)
+- Battery status
+- User session info
+
+### Usage
+
+```bash
+# Switch themes temporarily
+posh-theme <theme-name>
+
+# List available themes
+posh-theme
 ```
 
 ## Adding New Configurations

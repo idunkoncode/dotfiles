@@ -64,6 +64,11 @@ for file in ~/.config/fish/functions/*.fish
     source $file
 end
 
+# Oh My Posh initialization
+if status is-interactive
+    oh-my-posh init fish --config ~/.config/oh-my-posh/bubblesline.omp.json | source
+end
+
 # Welcome message
 if status is-interactive
     echo "🐟 Welcome to Fish shell!"

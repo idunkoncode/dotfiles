@@ -49,6 +49,7 @@ sync_file "$HOME/.gitconfig" "$DOTFILES_DIR/home/.gitconfig"
 sync_dir "$HOME/.config/fish" "$DOTFILES_DIR/config/fish"
 sync_dir "$HOME/.config/git" "$DOTFILES_DIR/config/git"
 sync_dir "$HOME/.config/ghostty" "$DOTFILES_DIR/config/ghostty"
+sync_dir "$HOME/.config/oh-my-posh" "$DOTFILES_DIR/config/oh-my-posh"
 
 echo "✅ Sync completed!"
 echo "💡 Run './scripts/update.sh' to commit changes to git"

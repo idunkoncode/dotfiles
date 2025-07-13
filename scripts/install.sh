@@ -38,6 +38,11 @@ if [ -d "$DOTFILES_DIR/config/git" ]; then
     create_symlink "$DOTFILES_DIR/config/git" "$CONFIG_DIR/git"
 fi
 
+# Install config files for Oh My Posh
+if [ -d "$DOTFILES_DIR/config/oh-my-posh" ]; then
+    create_symlink "$DOTFILES_DIR/config/oh-my-posh" "$CONFIG_DIR/oh-my-posh"
+fi
+
 # Install home directory files
 echo "🏠 Installing home directory files..."
 create_symlink "$DOTFILES_DIR/home/.bashrc" "$HOME/.bashrc"
