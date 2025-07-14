@@ -174,7 +174,7 @@ posh-theme atomic
 
 ## 🔄 Updating
 
-### Update dotfiles from repository
+### Manual Update
 
 ```bash
 cd ~/.dotfiles
@@ -185,6 +185,54 @@ This will:
 - Pull latest changes from the repository
 - Reinstall configurations
 - Commit and push any local changes
+
+### 🤖 Automated Sync (NEW!)
+
+Your dotfiles can now automatically sync without manual intervention!
+
+#### Option 1: Interactive Setup
+
+```bash
+cd ~/.dotfiles
+./scripts/setup-auto-sync.sh
+```
+
+Choose from:
+- Every hour
+- Every 4 hours
+- Daily at 2 AM
+- Custom schedule
+- At login/logout
+
+#### Option 2: Real-time Sync (Fish Shell)
+
+```bash
+# Enable automatic sync every 5 minutes while using terminal
+dotfiles-auto-sync enable
+
+# Check status
+dotfiles-auto-sync status
+
+# Disable
+dotfiles-auto-sync disable
+
+# Manual sync
+dotfiles-auto-sync sync
+```
+
+#### Option 3: Manual Auto-sync
+
+```bash
+# One-time sync with backup
+./scripts/auto-sync.sh
+```
+
+**Features:**
+- ✅ Automatic backup before sync
+- ✅ Intelligent change detection
+- ✅ Detailed commit messages
+- ✅ Error handling and logging
+- ✅ Configurable frequency
 
 ## 🔧 Customization
 
