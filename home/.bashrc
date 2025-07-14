@@ -115,4 +115,46 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-. "$HOME/.cargo/env"
+# Load cargo environment if it exists
+if [ -f "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
+fi
+
+# Oh My Posh initialization
+if [ -f ~/.local/bin/oh-my-posh ]; then
+    eval "$(oh-my-posh init bash --config ~/.config/oh-my-posh/bubblesline.omp.json)"
+fi
+
+# Function to switch Oh My Posh themes
+posh-theme() {
+    if ! command -v oh-my-posh > /dev/null 2>&1; then
+        echo "❌ Oh My Posh is not installed. Please install it first."
+        echo "💡 You can install it with: curl -s https://ohmyposh.dev/install.sh | bash -s"
+        return 1
+    fi
+    
+    if [ $# -eq 0 ]; then
+        echo "Usage: posh-theme <theme-name>"
+        if [ -d ~/.cache/oh-my-posh/themes/ ]; then
+            echo "🎨 Available themes:"
+            ls ~/.cache/oh-my-posh/themes/ | grep '\.omp\.json$' | sed 's/\.omp\.json$//' | sort
+        else
+            echo "No themes directory found. Please install Oh My Posh first."
+        fi
+        return 1
+    fi
+    
+    local theme_name="$1"
+    local theme_path="$HOME/.cache/oh-my-posh/themes/$theme_name.omp.json"
+    
+    if [ -f "$theme_path" ]; then
+        eval "$(oh-my-posh init bash --config "$theme_path")"
+        echo "✅ Switched to $theme_name theme"
+        # Update the symlink for persistence
+        ln -sf "$theme_path" ~/.config/oh-my-posh/current-theme.omp.json
+    else
+        echo "❌ Theme $theme_name not found"
+        echo "💡 Use 'posh-theme' without arguments to see available themes"
+        return 1
+    fi
+}

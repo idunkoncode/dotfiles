@@ -59,10 +59,8 @@ alias cb='cargo build'
 alias cr='cargo run'
 alias ct='cargo test'
 
-# Load custom functions
-for file in ~/.config/fish/functions/*.fish
-    source $file
-end
+# Load custom functions (fish automatically loads functions from functions/ directory)
+# No need to manually source them
 
 # Oh My Posh initialization
 if status is-interactive

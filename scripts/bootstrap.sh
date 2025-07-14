@@ -70,7 +70,7 @@ install_git() {
                     sudo pacman -S --noconfirm git
                 fi
                 ;;
-            opensuse*)
+            opensuse*|"opensuse-leap"|"opensuse-tumbleweed")
                 if command_exists zypper; then
                     sudo zypper install -y git
                 fi

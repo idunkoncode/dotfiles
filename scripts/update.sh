@@ -5,7 +5,7 @@ set -e
 
 DOTFILES_DIR="$HOME/.dotfiles"
 
-echo "🔄 Updating dotfiles repository..."
+echo "🔄 Updating dotfiles..."
 
 cd "$DOTFILES_DIR"
 
@@ -15,10 +15,20 @@ if [ ! -d ".git" ]; then
     exit 1
 fi
 
+# Function to determine the default branch
+get_default_branch() {
+    git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "master"
+}
+
 # Pull latest changes if remote exists
 if git remote -v | grep -q origin; then
-    echo "📥 Pulling latest changes..."
-    git pull origin main 2>/dev/null || git pull origin master 2>/dev/null || echo "⚠️  No remote changes to pull"
+    echo "📥 Pulling latest changes from repository..."
+    DEFAULT_BRANCH=$(get_default_branch)
+    git pull origin "$DEFAULT_BRANCH" 2>/dev/null || git pull origin master 2>/dev/null || echo "⚠️  No remote changes to pull"
+    
+    # Reinstall dotfiles after pulling updates
+    echo "🔗 Reinstalling dotfiles with latest changes..."
+    ./scripts/install.sh
 fi
 
 # Add any new files
@@ -35,8 +45,10 @@ fi
 
 # Push if remote exists
 if git remote -v | grep -q origin; then
-    echo "📤 Pushing changes..."
-    git push origin main 2>/dev/null || git push origin master 2>/dev/null || echo "⚠️  Could not push to remote"
+    echo "📤 Pushing changes to repository..."
+    DEFAULT_BRANCH=$(get_default_branch)
+    git push origin "$DEFAULT_BRANCH" 2>/dev/null || git push origin master 2>/dev/null || echo "⚠️  Could not push to remote"
 fi
 
 echo "✅ Dotfiles update completed!"
+echo "🔄 Restart your shell or run 'exec $SHELL' to apply any changes."

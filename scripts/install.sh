@@ -15,6 +15,7 @@ detect_os() {
             . /etc/os-release
             OS=$NAME
             DISTRO=$ID
+            VERSION_ID=${VERSION_ID:-""}
         elif [ -f /etc/redhat-release ]; then
             OS="Red Hat"
             DISTRO="rhel"
@@ -75,7 +76,7 @@ install_package() {
                 yay -S --noconfirm "${package_pacman:-$package}"
             fi
             ;;
-        opensuse*)
+        opensuse*|"opensuse-leap"|"opensuse-tumbleweed")
             if command_exists zypper; then
                 sudo zypper install -y "${package_yum:-$package}"
             fi
