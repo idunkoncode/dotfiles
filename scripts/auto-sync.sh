@@ -3,7 +3,7 @@
 # Automated dotfiles sync script
 # This script automatically commits and pushes changes to your dotfiles repository
 
-set -e
+# Removed set -e to allow graceful error handling
 
 # Check if we're in a desktop environment for notifications
 SEND_NOTIFICATIONS=false
@@ -127,9 +127,16 @@ This is an automated sync from $(hostname)"
     git commit -m "$commit_msg"
     
     # Push to remote
-    git push origin HEAD
-    
-    echo "✅ Changes pushed to repository"
+    if git push origin HEAD 2>/dev/null; then
+        echo "✅ Changes pushed to repository"
+    else
+        echo "⚠️  Could not push to repository (authentication may be required)"
+        echo "🔑 Please set up GitHub authentication:"
+        echo "   - Create a Personal Access Token at: https://github.com/settings/tokens"
+        echo "   - Run: git push origin HEAD"
+        echo "   - Enter your username and token when prompted"
+        return 1
+    fi
 }
 
 # Function to get default branch
