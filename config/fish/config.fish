@@ -43,15 +43,19 @@ alias ps='ps aux'
 
 # Media mount shortcuts
 alias media='cd /mnt && ls -la'
-alias media20='cd /mnt/media2.0'
-alias media21='cd /mnt/media2.1'
-alias media22='cd /mnt/media2.2'
-alias media23='cd /mnt/media2.3'
+alias media20='cd "/mnt/Media 2.0"'
+alias media21='cd "/mnt/Media 2.1"'
+alias media22='cd "/mnt/Media 2.2"'
+alias media23='cd "/mnt/Media 2.3"'
 
 # Development shortcuts
 alias py='python3'
 alias pip='pip3'
 alias serve='python3 -m http.server'
+
+# Dotfiles management
+alias dotfiles-status='~/.dotfiles/scripts/sync-status.sh'
+alias dotfiles-sync='~/.dotfiles/scripts/auto-sync.sh'
 
 # Cargo shortcuts
 alias cc='cargo check'
@@ -70,5 +74,5 @@ end
 # Welcome message
 if status is-interactive
     echo "🐟 Welcome to Fish shell!"
-    echo "💾 Media drives mounted at /mnt/media2.x"
+    echo "💾 Media drives mounted at /mnt/Media 2.x"
 end

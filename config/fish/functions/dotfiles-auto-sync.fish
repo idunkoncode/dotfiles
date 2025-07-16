@@ -3,7 +3,7 @@ function dotfiles-auto-sync --description 'Enable or disable automatic dotfiles 
         case enable on
             set -Ux DOTFILES_AUTO_SYNC 1
             echo "✅ Dotfiles auto-sync enabled"
-            echo "🔄 Dotfiles will sync automatically every 5 minutes when you use the terminal"
+            echo "🔄 Dotfiles will sync automatically every 45 minutes"
             echo "📝 To disable: dotfiles-auto-sync disable"
             
         case disable off
@@ -14,7 +14,7 @@ function dotfiles-auto-sync --description 'Enable or disable automatic dotfiles 
         case status
             if set -q DOTFILES_AUTO_SYNC
                 echo "✅ Dotfiles auto-sync is ENABLED"
-                echo "🔄 Syncs every 5 minutes during terminal usage"
+                echo "🔄 Syncs every 45 minutes"
             else
                 echo "❌ Dotfiles auto-sync is DISABLED"
             end
@@ -44,7 +44,7 @@ function dotfiles-auto-sync --description 'Enable or disable automatic dotfiles 
                 echo "  ❌ Auto-sync is DISABLED"
             end
             echo ""
-            echo "💡 When enabled, dotfiles sync automatically every 5 minutes"
-            echo "   while you're using the terminal."
+            echo "💡 When enabled, dotfiles sync automatically every 45 minutes"
+            echo "   via cron job in the background."
     end
 end

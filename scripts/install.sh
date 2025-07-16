@@ -16,6 +16,16 @@ detect_os() {
             OS=$NAME
             DISTRO=$ID
             VERSION_ID=${VERSION_ID:-""}
+            
+            # Special handling for openSUSE variants
+            case "$DISTRO" in
+                "opensuse-tumbleweed"|"opensuse-leap"|"opensuse-slowroll")
+                    DISTRO="opensuse"
+                    ;;
+                "opensuse"*)
+                    DISTRO="opensuse"
+                    ;;
+            esac
         elif [ -f /etc/redhat-release ]; then
             OS="Red Hat"
             DISTRO="rhel"
@@ -35,6 +45,7 @@ detect_os() {
     fi
     
     echo "🖥️  Detected OS: $OS ($DISTRO)"
+    [ -n "$VERSION_ID" ] && echo "📋 Version: $VERSION_ID"
 }
 
 # Check if command exists
@@ -76,9 +87,9 @@ install_package() {
                 yay -S --noconfirm "${package_pacman:-$package}"
             fi
             ;;
-        opensuse*|"opensuse-leap"|"opensuse-tumbleweed")
+        opensuse|opensuse*)
             if command_exists zypper; then
-                sudo zypper install -y "${package_yum:-$package}"
+                sudo zypper install --no-recommends -y "${package_yum:-$package}"
             fi
             ;;
         macos)

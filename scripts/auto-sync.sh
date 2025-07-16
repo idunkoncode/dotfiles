@@ -5,6 +5,23 @@
 
 set -e
 
+# Check if we're in a desktop environment for notifications
+SEND_NOTIFICATIONS=false
+if command -v notify-send >/dev/null 2>&1 && [ -n "$DISPLAY" ]; then
+    SEND_NOTIFICATIONS=true
+fi
+
+# Function to send notifications
+notify() {
+    local title="$1"
+    local message="$2"
+    local icon="${3:-info}"
+    
+    if [ "$SEND_NOTIFICATIONS" = true ]; then
+        notify-send "$title" "$message" --icon="$icon" --app-name="Dotfiles Sync" 2>/dev/null || true
+    fi
+}
+
 DOTFILES_DIR="$HOME/.dotfiles"
 BACKUP_DIR="$HOME/.dotfiles-backup"
 
@@ -54,12 +71,31 @@ sync_configs() {
         cp -r ~/.config/oh-my-posh/* config/oh-my-posh/ 2>/dev/null || true
     fi
     
-    # Sync home directory files
-    [ -f ~/.bashrc ] && cp ~/.bashrc home/.bashrc
-    [ -f ~/.gitconfig ] && cp ~/.gitconfig home/.gitconfig
-    [ -f ~/.vimrc ] && cp ~/.vimrc home/.vimrc
-    [ -f ~/.tmux.conf ] && cp ~/.tmux.conf home/.tmux.conf
-    [ -f ~/.profile ] && cp ~/.profile home/.profile
+    # Sync home directory files (only if they're not symlinks to dotfiles repo)
+    sync_file() {
+        local source="$1"
+        local target="$2"
+        
+        if [ -f "$source" ]; then
+            # Check if source is a symlink pointing to our dotfiles repo
+            if [ -L "$source" ]; then
+                local link_target=$(readlink "$source")
+                if [[ "$link_target" == *".dotfiles"* ]]; then
+                    echo "⚠️  Skipping $source (already symlinked to dotfiles repo)"
+                    return 0
+                fi
+            fi
+            
+            # Copy the file
+            cp "$source" "$target" 2>/dev/null || echo "⚠️  Could not copy $source to $target"
+        fi
+    }
+    
+    sync_file ~/.bashrc home/.bashrc
+    sync_file ~/.gitconfig home/.gitconfig
+    sync_file ~/.vimrc home/.vimrc
+    sync_file ~/.tmux.conf home/.tmux.conf
+    sync_file ~/.profile home/.profile
     
     echo "✅ Configurations synced"
 }
@@ -103,9 +139,12 @@ get_default_branch() {
 
 # Main execution
 main() {
+    notify "Dotfiles Sync" "Starting automatic sync..." "sync"
+    
     # Check if remote exists
     if ! git remote -v | grep -q origin; then
         echo "❌ No remote repository configured"
+        notify "Dotfiles Sync" "Error: No remote repository configured" "error"
         exit 1
     fi
     
@@ -121,7 +160,11 @@ main() {
     sync_configs
     
     # Commit and push
-    commit_and_push
+    if commit_and_push; then
+        notify "Dotfiles Sync" "Successfully synced and pushed changes" "software-update-available"
+    else
+        notify "Dotfiles Sync" "Sync completed but no changes to push" "info"
+    fi
     
     echo ""
     echo "✅ Auto-sync completed successfully!"

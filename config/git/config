@@ -59,3 +59,6 @@
 	
 	# Branch management
 	cleanup = "!git branch --merged | grep -v '\\*\\|main\\|master\\|develop' | xargs -n 1 git branch -d"
+[user]
+	name = shinlevitra
+	email = shinlevitra@auto-sync.local
