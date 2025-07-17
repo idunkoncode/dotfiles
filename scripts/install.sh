@@ -10,7 +10,8 @@ echo "🚀 Installing dotfiles..."
 
 # Detect OS and distribution
 detect_os() {
-    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Check if we're on Linux (including when OSTYPE is not set in Fish)
+    if [[ "$OSTYPE" == "linux"* ]] || [[ "$OSTYPE" == "" && "$(uname -s)" == "Linux" ]]; then
         if [ -f /etc/os-release ]; then
             . /etc/os-release
             OS=$NAME
@@ -36,7 +37,7 @@ detect_os() {
             OS="Linux"
             DISTRO="unknown"
         fi
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
+    elif [[ "$OSTYPE" == "darwin"* ]] || [[ "$OSTYPE" == "" && "$(uname -s)" == "Darwin" ]]; then
         OS="macOS"
         DISTRO="macos"
     else
@@ -156,9 +157,9 @@ install_oh_my_posh() {
     local install_dir="$HOME/.local/bin"
     mkdir -p "$install_dir"
     
-    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    if [[ "$OSTYPE" == "linux"* ]] || [[ "$OSTYPE" == "" && "$(uname -s)" == "Linux" ]]; then
         curl -s https://ohmyposh.dev/install.sh | bash -s -- -d "$install_dir"
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
+    elif [[ "$OSTYPE" == "darwin"* ]] || [[ "$OSTYPE" == "" && "$(uname -s)" == "Darwin" ]]; then
         if command_exists brew; then
             brew install jandedobbeleer/oh-my-posh/oh-my-posh
         else
