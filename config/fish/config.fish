@@ -4,6 +4,7 @@
 set -gx EDITOR nano
 set -gx PAGER less
 set -gx LANG en_US.UTF-8
+set -gx QT_QPA_PLATFORMTHEME kvantum
 
 # Add local bin to PATH
 fish_add_path ~/.local/bin
