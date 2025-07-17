@@ -211,6 +211,30 @@ install_dependencies() {
                 ;;
         esac
     fi
+    
+    # Font tools for Nerd Fonts
+    if ! command_exists fc-cache; then
+        case $DISTRO in
+            ubuntu|debian)
+                install_package "fontconfig" "fontconfig" "fontconfig" "fontconfig" "fontconfig"
+                ;;
+            fedora|rhel|centos)
+                install_package "fontconfig" "fontconfig" "fontconfig" "fontconfig" "fontconfig"
+                ;;
+            arch|manjaro)
+                install_package "fontconfig" "fontconfig" "fontconfig" "fontconfig" "fontconfig"
+                ;;
+            opensuse|opensuse*)
+                install_package "fontconfig" "fontconfig" "fontconfig" "fontconfig" "fontconfig"
+                ;;
+            macos)
+                echo "ℹ️  fontconfig available via Homebrew if needed"
+                ;;
+            *)
+                echo "⚠️  Please install fontconfig manually for font management"
+                ;;
+        esac
+    fi
 }
 
 # Install Oh My Posh
@@ -339,6 +363,18 @@ post_install_setup() {
             echo "   cd ~/.dotfiles/gnome && ./backup-gnome-settings.sh"
         fi
     fi
+    
+    # Nerd Fonts Installation
+    if [ -f "$DOTFILES_DIR/fonts/install-nerd-fonts.sh" ]; then
+        echo "🔤 Nerd Fonts installation available!"
+        echo "Would you like to install Nerd Fonts for better terminal and editor experience?"
+        echo "This includes: FiraCode, JetBrainsMono, Hack, Source Code Pro, Meslo, and CascadiaCode"
+        read -p "Install Nerd Fonts? (y/n): " -r response
+        if [[ "$response" =~ ^[Yy]$ ]]; then
+            echo "🔤 Installing Nerd Fonts..."
+            cd "$DOTFILES_DIR/fonts" && ./install-nerd-fonts.sh
+        fi
+    fi
 }
 
 # Run post-installation setup
@@ -361,6 +397,9 @@ echo "  • Custom Fish functions and aliases"
 echo "  • Desktop notifications for sync feedback"
 if [ "$XDG_CURRENT_DESKTOP" = "GNOME" ] || [ "$DESKTOP_SESSION" = "gnome" ]; then
     echo "  • GNOME settings backup/restore system"
+fi
+if [ -f "$DOTFILES_DIR/fonts/install-nerd-fonts.sh" ]; then
+    echo "  • Nerd Fonts installation system"
 fi
 echo ""
 echo "🚀 Quick start:"
