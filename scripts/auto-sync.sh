@@ -281,7 +281,7 @@ main() {
     
     # Commit and push
     if commit_and_push; then
-        local changed_files=$(git log -1 --pretty=format:"%s" | grep -o "Changed files: [^"]*" | sed 's/Changed files: //')
+        local changed_files=$(git log -1 --pretty=format:"%s" | grep -o "Changed files: [^$]*" | sed 's/Changed files: //' || echo "various files")
         notify "Dotfiles Sync" "✅ Successfully synced and pushed changes\n📁 Files: $changed_files" "software-update-available"
     else
         notify "Dotfiles Sync" "Sync completed but no changes to push" "info"
