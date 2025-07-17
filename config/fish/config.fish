@@ -78,4 +78,4 @@ if status is-interactive
     echo "💾 Media drives mounted at /mnt/Media 2.x"
 end
 set -x GNOME_KEYRING_CONTROL ""
-unset SSH_AUTH_SOCK
+set -e SSH_AUTH_SOCK
