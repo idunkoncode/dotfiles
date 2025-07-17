@@ -1,0 +1,26 @@
+GNOME Settings Backup
+====================
+
+Date: Thu Jul 17 04:22:05 PM PDT 2025
+Hostname: localhost.localdomain
+User: shinlevitra
+Desktop: GNOME
+Session: gnome
+GNOME Version: GNOME Shell 48.3
+
+Backup Location: /home/shinlevitra/.dotfiles/gnome/backups/backup_20250717_162204
+
+Files backed up:
+- gnome-settings.dconf (Complete settings)
+- desktop-settings.dconf (Desktop preferences)
+- shell-settings.dconf (Shell configuration)
+- settings-daemon.dconf (Settings daemon)
+- nautilus-settings.dconf (File manager)
+- mutter-settings.dconf (Window manager)
+- extensions-settings.dconf (Extensions)
+- installed-extensions.txt (Extensions list)
+
+To restore these settings on another machine:
+1. Run: ./restore-gnome-settings.sh
+2. Log out and back in
+3. Install extensions if needed

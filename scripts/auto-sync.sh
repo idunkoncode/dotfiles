@@ -170,10 +170,19 @@ sync_configs() {
         cp -r ~/.config/fish/* config/fish/ 2>/dev/null || true
     fi
     
-    # Sync oh-my-posh configuration
-    if [ -d ~/.config/oh-my-posh ]; then
-        cp -r ~/.config/oh-my-posh/* config/oh-my-posh/ 2>/dev/null || true
-    fi
+        # Sync oh-my-posh configuration
+        if [ -d ~/.config/oh-my-posh ]; then
+            cp -r ~/.config/oh-my-posh/* config/oh-my-posh/ 2>/dev/null || true
+        fi
+        
+        # Sync GNOME settings if in GNOME environment
+        if [ "$XDG_CURRENT_DESKTOP" = "GNOME" ] || [ "$DESKTOP_SESSION" = "gnome" ]; then
+            if [ -d gnome ] && [ -x gnome/backup-gnome-settings.sh ]; then
+                echo "📱 Backing up GNOME settings..."
+                cd gnome && ./backup-gnome-settings.sh >/dev/null 2>&1 && cd ..
+                echo "✅ GNOME settings backed up"
+            fi
+        fi
     
     # Sync home directory files (only if they're not symlinks to dotfiles repo)
     sync_file() {

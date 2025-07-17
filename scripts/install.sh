@@ -304,7 +304,7 @@ post_install_setup() {
         
         if ! grep -q "$fish_path" /etc/shells 2>/dev/null; then
             echo "🐟 Adding Fish to /etc/shells..."
-            echo "$fish_path" | sudo tee -a /etc/shells >/dev/null
+            echo "$fish_path" | sudo tee -a /etc/shells > /dev/null
         fi
         
         # Offer to change default shell to Fish
@@ -321,6 +321,23 @@ post_install_setup() {
     # Set up Fish config directory permissions
     if [ -d "$HOME/.config/fish" ]; then
         chmod -R 755 "$HOME/.config/fish"
+    fi
+    
+    # GNOME Settings Restoration
+    if [ "$XDG_CURRENT_DESKTOP" = "GNOME" ] || [ "$DESKTOP_SESSION" = "gnome" ]; then
+        echo "📱 GNOME desktop detected!"
+        if [ -f "$DOTFILES_DIR/gnome/gnome-settings.dconf" ]; then
+            echo "🔄 GNOME settings backup found. Would you like to restore your GNOME settings?"
+            echo "This will restore your desktop preferences, themes, keybindings, and extensions."
+            read -p "Restore GNOME settings? (y/n): " -r response
+            if [[ "$response" =~ ^[Yy]$ ]]; then
+                echo "📱 Restoring GNOME settings..."
+                cd "$DOTFILES_DIR/gnome" && ./restore-gnome-settings.sh
+            fi
+        else
+            echo "ℹ️  No GNOME settings backup found. You can create one later with:"
+            echo "   cd ~/.dotfiles/gnome && ./backup-gnome-settings.sh"
+        fi
     fi
 }
 
@@ -342,6 +359,9 @@ echo "  • Vim configuration"
 echo "  • Tmux configuration"
 echo "  • Custom Fish functions and aliases"
 echo "  • Desktop notifications for sync feedback"
+if [ "$XDG_CURRENT_DESKTOP" = "GNOME" ] || [ "$DESKTOP_SESSION" = "gnome" ]; then
+    echo "  • GNOME settings backup/restore system"
+fi
 echo ""
 echo "🚀 Quick start:"
 echo "  • Run 'fish' to start Fish shell"
