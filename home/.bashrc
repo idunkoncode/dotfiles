@@ -158,3 +158,5 @@ posh-theme() {
         return 1
     fi
 }
+export GNOME_KEYRING_CONTROL=
+unset SSH_AUTH_SOCK
