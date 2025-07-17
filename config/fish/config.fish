@@ -79,3 +79,4 @@ if status is-interactive
 end
 set -x GNOME_KEYRING_CONTROL ""
 unset SSH_AUTH_SOCK
+# Test comment

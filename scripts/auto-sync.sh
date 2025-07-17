@@ -2,12 +2,13 @@
 
 # Automated dotfiles sync script
 # This script automatically commits and pushes changes to your dotfiles repository
+# Optimized to only sync when changes are detected and keep only 1 backup
 
 # Removed set -e to allow graceful error handling
 
 # Check if we're in a desktop environment for notifications
 SEND_NOTIFICATIONS=false
-if command -v notify-send >/dev/null 2>&1 && [ -n "$DISPLAY" ]; then
+if command -v notify-send > /dev/null 2>&1 && [ -n "$DISPLAY" ]; then
     SEND_NOTIFICATIONS=true
 fi
 
@@ -24,8 +25,9 @@ notify() {
 
 DOTFILES_DIR="$HOME/.dotfiles"
 BACKUP_DIR="$HOME/.dotfiles-backup"
+TEMP_DIR="/tmp/dotfiles-sync-$$"
 
-echo "🔄 Auto-syncing dotfiles..."
+echo "🔍 Checking for changes..."
 
 cd "$DOTFILES_DIR"
 
@@ -35,9 +37,107 @@ if [ ! -d ".git" ]; then
     exit 1
 fi
 
+# Function to check if there are actual changes to sync
+check_for_changes() {
+    local has_changes=false
+    
+    # First, check if there are any uncommitted changes in git
+    if ! git diff --quiet || ! git diff --cached --quiet; then
+        has_changes=true
+        echo "📝 Uncommitted changes detected in git repository"
+    fi
+    
+    # If no git changes, check for file-level changes
+    if [ "$has_changes" = false ]; then
+        # Create temp directory for comparison
+        mkdir -p "$TEMP_DIR"
+        
+        # Copy current configs to temp directory
+        if [ -d ~/.config/fish ]; then
+            mkdir -p "$TEMP_DIR/config/fish"
+            cp -r ~/.config/fish/* "$TEMP_DIR/config/fish/" 2>/dev/null || true
+        fi
+        
+        if [ -d ~/.config/oh-my-posh ]; then
+            mkdir -p "$TEMP_DIR/config/oh-my-posh"
+            cp -r ~/.config/oh-my-posh/* "$TEMP_DIR/config/oh-my-posh/" 2>/dev/null || true
+        fi
+        
+        # Copy home directory files (only if they're not symlinks to dotfiles repo)
+        copy_if_not_symlink() {
+            local source="$1"
+            local target="$2"
+            
+            if [ -f "$source" ]; then
+                if [ -L "$source" ]; then
+                    local link_target=$(readlink "$source")
+                    if [[ "$link_target" == *".dotfiles"* ]]; then
+                        return 0  # Skip symlinked files
+                    fi
+                fi
+                mkdir -p "$(dirname "$target")"
+                cp "$source" "$target" 2>/dev/null || true
+            fi
+        }
+        
+        copy_if_not_symlink ~/.bashrc "$TEMP_DIR/home/.bashrc"
+        copy_if_not_symlink ~/.gitconfig "$TEMP_DIR/home/.gitconfig"
+        copy_if_not_symlink ~/.vimrc "$TEMP_DIR/home/.vimrc"
+        copy_if_not_symlink ~/.tmux.conf "$TEMP_DIR/home/.tmux.conf"
+        copy_if_not_symlink ~/.profile "$TEMP_DIR/home/.profile"
+        
+        # Compare with current dotfiles repository
+        if [ -d "$TEMP_DIR/config/fish" ] && [ -d "config/fish" ]; then
+            if ! diff -r "$TEMP_DIR/config/fish" "config/fish" > /dev/null 2>&1; then
+                has_changes=true
+                echo "📝 Changes detected in fish config"
+            fi
+        fi
+        
+        if [ -d "$TEMP_DIR/config/oh-my-posh" ] && [ -d "config/oh-my-posh" ]; then
+            if ! diff -r "$TEMP_DIR/config/oh-my-posh" "config/oh-my-posh" > /dev/null 2>&1; then
+                has_changes=true
+                echo "📝 Changes detected in oh-my-posh config"
+            fi
+        fi
+        
+        # Check home directory files
+        for file in .bashrc .gitconfig .vimrc .tmux.conf .profile; do
+            if [ -f "$TEMP_DIR/home/$file" ] && [ -f "home/$file" ]; then
+                if ! diff "$TEMP_DIR/home/$file" "home/$file" > /dev/null 2>&1; then
+                    has_changes=true
+                    echo "📝 Changes detected in $file"
+                fi
+            elif [ -f "$TEMP_DIR/home/$file" ] && [ ! -f "home/$file" ]; then
+                has_changes=true
+                echo "📝 New file detected: $file"
+            fi
+        done
+        
+        # Clean up temp directory
+        rm -rf "$TEMP_DIR"
+    fi
+    
+    if [ "$has_changes" = true ]; then
+        echo "🔄 Changes detected, starting sync..."
+        return 0
+    else
+        echo "✅ No changes detected, skipping sync."
+        return 1
+    fi
+}
+
+# Only proceed if there are changes
+if ! check_for_changes; then
+    exit 0
+fi
+
 # Function to backup current dotfiles
 backup_dotfiles() {
     echo "💾 Creating backup of current dotfiles..."
+    
+    # Remove all existing backups first
+    rm -rf "${BACKUP_DIR}_"*
     
     # Create backup directory with timestamp
     local backup_timestamp=$(date +%Y%m%d_%H%M%S)
@@ -55,6 +155,7 @@ backup_dotfiles() {
     cp ~/.profile "$current_backup_dir/" 2>/dev/null || true
     
     echo "✅ Backup created at: $current_backup_dir"
+    echo "🗑️  Previous backups removed (keeping only 1)"
 }
 
 # Function to sync current configs to dotfiles repo
