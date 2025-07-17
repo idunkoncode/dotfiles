@@ -132,6 +132,9 @@ if ! check_for_changes; then
     exit 0
 fi
 
+# Send notification about detected changes
+notify "Dotfiles Sync" "Changes detected! Starting sync process..." "sync"
+
 # Function to backup current dotfiles
 backup_dotfiles() {
     echo "💾 Creating backup of current dotfiles..."
@@ -269,7 +272,8 @@ main() {
     
     # Commit and push
     if commit_and_push; then
-        notify "Dotfiles Sync" "Successfully synced and pushed changes" "software-update-available"
+        local changed_files=$(git log -1 --pretty=format:"%s" | grep -o "Changed files: [^"]*" | sed 's/Changed files: //')
+        notify "Dotfiles Sync" "✅ Successfully synced and pushed changes\n📁 Files: $changed_files" "software-update-available"
     else
         notify "Dotfiles Sync" "Sync completed but no changes to push" "info"
     fi

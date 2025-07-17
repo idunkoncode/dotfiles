@@ -132,10 +132,47 @@ install_dependencies() {
         install_package "fish" "fish" "fish" "fish" "fish"
     fi
     
+    # Ghostty terminal emulator
+    if ! command_exists ghostty; then
+        echo "👻 Installing Ghostty terminal emulator..."
+        install_package "ghostty" "ghostty" "ghostty" "ghostty" "ghostty"
+    fi
+    
     # Oh My Posh
     if ! command_exists oh-my-posh; then
         echo "🎨 Installing Oh My Posh..."
         install_oh_my_posh
+    fi
+    
+    # GitHub CLI for dotfiles sync
+    if ! command_exists gh; then
+        echo "🐙 Installing GitHub CLI..."
+        install_package "gh" "gh" "gh" "github-cli" "gh"
+    fi
+    
+    # Cron service for automated sync
+    if ! command_exists crontab; then
+        echo "⏰ Installing cron service..."
+        case $DISTRO in
+            ubuntu|debian)
+                install_package "cron" "cron" "cron" "cron" "cron"
+                ;;
+            fedora|rhel|centos)
+                install_package "cronie" "cronie" "cronie" "cronie" "cronie"
+                ;;
+            arch|manjaro)
+                install_package "cronie" "cronie" "cronie" "cronie" "cronie"
+                ;;
+            opensuse|opensuse*)
+                install_package "cronie" "cronie" "cronie" "cronie" "cronie"
+                ;;
+            macos)
+                echo "ℹ️  Cron is built into macOS"
+                ;;
+            *)
+                echo "⚠️  Please install cron manually for your distribution"
+                ;;
+        esac
     fi
     
     # Optional tools
@@ -149,6 +186,30 @@ install_dependencies() {
     
     if ! command_exists rsync; then
         install_package "rsync" "rsync" "rsync" "rsync" "rsync"
+    fi
+
+    # Desktop notifications for sync feedback
+    if ! command_exists notify-send; then
+        case $DISTRO in
+            ubuntu|debian)
+                install_package "libnotify-bin" "libnotify-bin" "libnotify" "libnotify" "libnotify"
+                ;;
+            fedora|rhel|centos)
+                install_package "libnotify" "libnotify" "libnotify" "libnotify" "libnotify"
+                ;;
+            arch|manjaro)
+                install_package "libnotify" "libnotify" "libnotify" "libnotify" "libnotify"
+                ;;
+            opensuse|opensuse*)
+                install_package "libnotify-tools" "libnotify-tools" "libnotify-tools" "libnotify" "libnotify"
+                ;;
+            macos)
+                echo "ℹ️  macOS has built-in notification system"
+                ;;
+            *)
+                echo "⚠️  Please install libnotify/notify-send manually for desktop notifications"
+                ;;
+        esac
     fi
 }
 
@@ -272,11 +333,15 @@ echo "🔄 You may need to restart your shell or run 'exec \$SHELL' to apply cha
 echo ""
 echo "🔧 What's been installed:"
 echo "  • Fish shell with custom configuration"
+echo "  • Ghostty terminal emulator with custom config"
 echo "  • Oh My Posh with bubblesline theme"
+echo "  • GitHub CLI for dotfiles sync"
+echo "  • Cron service for automated sync"
 echo "  • Git configuration and aliases"
 echo "  • Vim configuration"
 echo "  • Tmux configuration"
 echo "  • Custom Fish functions and aliases"
+echo "  • Desktop notifications for sync feedback"
 echo ""
 echo "🚀 Quick start:"
 echo "  • Run 'fish' to start Fish shell"
