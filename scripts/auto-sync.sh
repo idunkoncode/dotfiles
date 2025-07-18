@@ -63,6 +63,11 @@ check_for_changes() {
             cp -r ~/.config/oh-my-posh/* "$TEMP_DIR/config/oh-my-posh/" 2>/dev/null || true
         fi
         
+        if [ -d ~/.config/nvim ]; then
+            mkdir -p "$TEMP_DIR/config/nvim"
+            cp -r ~/.config/nvim/* "$TEMP_DIR/config/nvim/" 2>/dev/null || true
+        fi
+        
         # Copy home directory files (only if they're not symlinks to dotfiles repo)
         copy_if_not_symlink() {
             local source="$1"
@@ -98,6 +103,13 @@ check_for_changes() {
             if ! diff -r "$TEMP_DIR/config/oh-my-posh" "config/oh-my-posh" > /dev/null 2>&1; then
                 has_changes=true
                 echo "📝 Changes detected in oh-my-posh config"
+            fi
+        fi
+        
+        if [ -d "$TEMP_DIR/config/nvim" ] && [ -d "config/nvim" ]; then
+            if ! diff -r "$TEMP_DIR/config/nvim" "config/nvim" > /dev/null 2>&1; then
+                has_changes=true
+                echo "📝 Changes detected in nvim config"
             fi
         fi
         
@@ -151,6 +163,7 @@ backup_dotfiles() {
     # Copy current dotfiles to backup
     cp -r ~/.config/fish "$current_backup_dir/" 2>/dev/null || true
     cp -r ~/.config/oh-my-posh "$current_backup_dir/" 2>/dev/null || true
+    cp -r ~/.config/nvim "$current_backup_dir/" 2>/dev/null || true
     cp ~/.bashrc "$current_backup_dir/" 2>/dev/null || true
     cp ~/.gitconfig "$current_backup_dir/" 2>/dev/null || true
     cp ~/.vimrc "$current_backup_dir/" 2>/dev/null || true

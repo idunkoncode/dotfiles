@@ -288,6 +288,7 @@ create_symlink() {
 echo "📁 Installing config files..."
 create_symlink "$DOTFILES_DIR/config/fish" "$CONFIG_DIR/fish"
 create_symlink "$DOTFILES_DIR/config/ghostty" "$CONFIG_DIR/ghostty"
+create_symlink "$DOTFILES_DIR/config/nvim" "$CONFIG_DIR/nvim"
 
 # Install config files for git
 if [ -d "$DOTFILES_DIR/config/git" ]; then
@@ -391,6 +392,7 @@ echo "  • Oh My Posh with bubblesline theme"
 echo "  • GitHub CLI for dotfiles sync"
 echo "  • Cron service for automated sync"
 echo "  • Git configuration and aliases"
+echo "  • Neovim with LazyVim and Rust support"
 echo "  • Vim configuration"
 echo "  • Tmux configuration"
 echo "  • Custom Fish functions and aliases"
