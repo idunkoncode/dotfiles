@@ -79,3 +79,11 @@ if status is-interactive
 end
 set -x GNOME_KEYRING_CONTROL ""
 set -e SSH_AUTH_SOCK
+set -gx GNOME_KEYRING_CONTROL /run/user/1000/keyring
+export GNOME_KEYRING_CONTROL=
+export GNOME_KEYRING_PID=
+
+# Disable keyring password prompts
+set -x GNOME_KEYRING_CONTROL ""
+set -x GNOME_KEYRING_PID ""
+
