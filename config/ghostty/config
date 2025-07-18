@@ -41,3 +41,10 @@
 # # which is explained in the docs for that config option.
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
+
+# Font configuration for better oh-my-posh support
+font-family = JetBrainsMono Nerd Font
+font-size = 12
+
+# Enable truecolor support for better colors
+term = xterm-256color
