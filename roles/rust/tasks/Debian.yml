@@ -1,5 +1,5 @@
 ---
-# Install rustup on Ubuntu (modern approach)
+# Install rustup on Debian
 - name: "Rust | {{ ansible_distribution }} | Install curl (required for rustup)"
   ansible.builtin.apt:
     name: curl
@@ -23,14 +23,3 @@
     creates: "{{ ansible_env.HOME }}/.cargo/bin/cargo"
   environment:
     HOME: "{{ ansible_env.HOME }}"
-
-# Legacy packages install (kept commented for reference)
-# - name: Rust | Install packages via apt
-#   ansible.builtin.apt:
-#     name: "{{ item }}"
-#     state: present
-#     update_cache: true
-#   become: true
-#   loop:
-#     - rustc
-#     - cargo

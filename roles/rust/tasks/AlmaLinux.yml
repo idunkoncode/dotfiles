@@ -1,10 +1,9 @@
 ---
-# Install rustup on Ubuntu (modern approach)
+# Install rustup on AlmaLinux
 - name: "Rust | {{ ansible_distribution }} | Install curl (required for rustup)"
-  ansible.builtin.apt:
+  ansible.builtin.dnf:
     name: curl
     state: present
-    update_cache: true
   become: true
 
 - name: "Rust | {{ ansible_distribution }} | Download and install rustup"
@@ -23,14 +22,3 @@
     creates: "{{ ansible_env.HOME }}/.cargo/bin/cargo"
   environment:
     HOME: "{{ ansible_env.HOME }}"
-
-# Legacy packages install (kept commented for reference)
-# - name: Rust | Install packages via apt
-#   ansible.builtin.apt:
-#     name: "{{ item }}"
-#     state: present
-#     update_cache: true
-#   become: true
-#   loop:
-#     - rustc
-#     - cargo

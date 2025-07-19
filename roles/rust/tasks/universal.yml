@@ -1,0 +1,83 @@
+---
+# Universal rustup installer for any Linux distribution
+- name: "Rust | Universal | Display distribution notice"
+  ansible.builtin.debug:
+    msg: |
+      No specific Rust installation found for {{ ansible_distribution }}.
+      Using universal rustup installer method.
+
+- name: "Rust | Universal | Check if curl is available"
+  ansible.builtin.command: which curl
+  register: curl_check
+  failed_when: false
+  changed_when: false
+
+- name: "Rust | Universal | Install curl if not available (attempt with common package managers)"
+  block:
+    - name: "Rust | Universal | Try installing curl with apt"
+      ansible.builtin.apt:
+        name: curl
+        state: present
+        update_cache: true
+      become: true
+      when: ansible_pkg_mgr == "apt"
+
+    - name: "Rust | Universal | Try installing curl with yum"
+      ansible.builtin.yum:
+        name: curl
+        state: present
+      become: true
+      when: ansible_pkg_mgr == "yum"
+
+    - name: "Rust | Universal | Try installing curl with dnf"
+      ansible.builtin.dnf:
+        name: curl
+        state: present
+      become: true
+      when: ansible_pkg_mgr == "dnf"
+
+    - name: "Rust | Universal | Try installing curl with zypper"
+      community.general.zypper:
+        name: curl
+        state: present
+      become: true
+      when: ansible_pkg_mgr == "zypper"
+
+    - name: "Rust | Universal | Try installing curl with pacman"
+      community.general.pacman:
+        name: curl
+        state: present
+      become: true
+      when: ansible_pkg_mgr == "pacman"
+  when: curl_check.rc != 0
+
+- name: "Rust | Universal | Download and install rustup"
+  ansible.builtin.shell: |
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  args:
+    creates: "{{ ansible_env.HOME }}/.cargo/bin/rustup"
+  environment:
+    HOME: "{{ ansible_env.HOME }}"
+
+- name: "Rust | Universal | Initialize rustup environment"
+  ansible.builtin.shell: |
+    source {{ ansible_env.HOME }}/.cargo/env
+    rustup default stable
+  args:
+    creates: "{{ ansible_env.HOME }}/.cargo/bin/cargo"
+  environment:
+    HOME: "{{ ansible_env.HOME }}"
+
+- name: "Rust | Universal | Add cargo to PATH for current session"
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: 'export PATH="$HOME/.cargo/bin:$PATH"'
+    create: true
+  when: ansible_env.SHELL | basename == "bash"
+
+- name: "Rust | Universal | Add cargo to PATH for fish shell"
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.config/fish/config.fish"
+    line: 'set -gx PATH $HOME/.cargo/bin $PATH'
+    create: true
+  when: ansible_env.SHELL | basename == "fish"

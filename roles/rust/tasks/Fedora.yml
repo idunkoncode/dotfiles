@@ -1,0 +1,7 @@
+---
+# Install rustup on Fedora
+- name: "Rust | {{ ansible_distribution }} | Install rustup"
+  ansible.builtin.dnf:
+    name: rustup
+    state: present
+  become: true
