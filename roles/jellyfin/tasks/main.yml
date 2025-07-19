@@ -1,0 +1,17 @@
+---
+# tasks file for jellyfin role
+
+- name: Create Jellyfin Flatpak config directory
+  file:
+    path: "{{ ansible_facts.home }}/.var/app/org.jellyfin.JellyfinServer/config/jellyfin"
+    state: directory
+    mode: '0755'
+    recurse: yes
+
+- name: Copy Jellyfin config files to Flatpak sandbox
+  copy:
+    src: "{{ playbook_dir }}/config/jellyfin/"
+    dest: "{{ ansible_facts.home }}/.var/app/org.jellyfin.JellyfinServer/config/jellyfin/"
+    mode: '0644'
+    backup: yes
+

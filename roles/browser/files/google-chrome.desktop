@@ -1,0 +1,28 @@
+[Desktop Entry]
+Version=1.0
+Name=Google Chrome
+Comment=Access the Internet
+GenericName=Web Browser
+Keywords=Internet;WWW;Browser;Web;Explorer
+Exec=google-chrome %U
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Icon=google-chrome
+Categories=Network;WebBrowser;
+MimeType=text/html;text/xml;application/xhtml_xml;image/webp;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
+StartupWMClass=google-chrome
+StartupNotify=true
+Actions=NewWindow;NewIncognito;NewTempProfile;
+
+[Desktop Action NewWindow]
+Name=New Window
+Exec=google-chrome
+
+[Desktop Action NewIncognito]
+Name=New Incognito Window
+Exec=google-chrome --incognito
+
+[Desktop Action NewTempProfile]
+Name=New Temp Profile
+Exec=google-chrome --temp-profile
