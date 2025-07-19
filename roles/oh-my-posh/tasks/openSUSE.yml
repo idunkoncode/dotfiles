@@ -1,0 +1,18 @@
+---
+- name: "{{ role_name }} | Install oh-my-posh via Homebrew (openSUSE)"
+  community.general.homebrew:
+    name: oh-my-posh
+    state: present
+  tags:
+    - oh-my-posh
+
+- name: "{{ role_name }} | Install Nerd Fonts for better oh-my-posh support"
+  community.general.homebrew:
+    name: 
+      - font-hack-nerd-font
+      - font-fira-code-nerd-font
+      - font-jetbrains-mono-nerd-font
+    state: present
+  tags:
+    - oh-my-posh
+    - fonts

@@ -1,0 +1,8 @@
+---
+- name: "{{ role_name }} | Install lsd (openSUSE)"
+  community.general.zypper:
+    name: lsd
+    state: present
+  become: true
+  tags:
+    - lsd

@@ -1,0 +1,48 @@
+---
+- name: "{{ role_name }} | Install GNOME extensions manager (openSUSE)"
+  community.general.zypper:
+    name: gnome-shell-extension-manager
+    state: present
+  become: true
+  tags:
+    - gnome
+    - extensions
+
+- name: "{{ role_name }} | Install essential GNOME extensions (openSUSE)"
+  community.general.zypper:
+    name:
+      - gnome-shell-extension-user-theme
+      - gnome-shell-extension-dash-to-dock
+      - gnome-shell-extension-gsconnect
+      - gnome-shell-extension-blur-my-shell
+    state: present
+  become: true
+  tags:
+    - gnome
+    - extensions
+
+- name: "{{ role_name }} | Install additional GNOME tools (openSUSE)"
+  community.general.zypper:
+    name:
+      - gnome-tweaks
+      - dconf-editor
+      - papirus-icon-theme
+      - arc-theme
+      - numix-gtk-theme
+    state: present
+  become: true
+  tags:
+    - gnome
+    - tools
+
+- name: "{{ role_name }} | Install fonts for better UI (openSUSE)"
+  community.general.zypper:
+    name:
+      - google-noto-fonts
+      - google-roboto-fonts
+      - fira-sans-fonts
+    state: present
+  become: true
+  tags:
+    - gnome
+    - fonts

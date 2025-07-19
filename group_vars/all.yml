@@ -1,19 +1,22 @@
 default_roles:
   - system
-  # - 1password
   - aldente
   - asciiquarium
   - bash
   - bat
+  - browsers
   - btop
   - claude
   # - discord
   # - docker
+  - fish
   - flatpak
   - fonts
   - fzf
   - gh
+  - ghostty
   - git
+  - gnome
   - go
   - hammerspoon
   - helm
@@ -32,6 +35,7 @@ default_roles:
   - npm
   - nvm
   - obsidian
+  - oh-my-posh
   - podman
   - pwsh
   - python
@@ -57,24 +61,15 @@ default_roles:
   - zoxide
   - zsh
 
-git_user_name: "TechDufus"
-op:
-  git:
-    user:
-      email: "op://Personal/GitHub/email"
-    allowed_signers: "op://Personal/TechDufus SSH/allowed_signers"
-  ssh:
-    github:
-      techdufus:
-        - name: id_ed25519
-          vault_path: "op://Personal/TechDufus SSH"
-        - name: raft-infra
-          vault_path: "op://Raft/Raft-SSH"
-# FIXME: See `system/tasks/main.yml` for how to structure this var looping.
-  # system:
-  #   hosts:
-  #     - item: op://Raft/rdp-demo-local-ingress/notesPlain
-  #       account: my.1password.com
+git_user_name: "idunkoncode"
+git_user_email: "idunkoncode@proton.me"
+
+# SSH Configuration
+ssh_keys:
+  - name: id_ed25519
+    type: ed25519
+  - name: id_rsa
+    type: rsa
 
 k8s:
   repo:
@@ -94,3 +89,22 @@ go:
     # NOTE: termshark has dependency issues with v2.4.0
     # - package: github.com/stillmatic/chat@latest
     #   cmd: chat
+
+# Fish shell configuration
+fish_config: true
+fish_set_default: true
+
+# Oh My Posh configuration
+oh_my_posh_theme: "catppuccin_mocha.omp.json"
+
+# GNOME configuration
+gnome_shell_theme: "Yaru-dark"
+gnome_gtk_theme: "Yaru-dark"
+gnome_icon_theme: "Papirus-Dark"
+gnome_cursor_theme: "Yaru"
+gnome_wallpaper: "/usr/share/backgrounds/opensuse/openSUSE-default.xml"
+
+# Browser configuration
+browsers_install_chrome: true
+browsers_install_edge: true
+browsers_install_firefox: true

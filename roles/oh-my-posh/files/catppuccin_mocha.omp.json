@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json.schemastore.org/omp.json",
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "session",
+          "style": "powerline",
+          "foreground": "#ffffff",
+          "background": "#4c566a"
+        },
+        {
+          "type": "path",
+          "style": "plain",
+          "foreground": "#88c0d0"
+        },
+        {
+          "type": "git",
+          "style": "powerline",
+          "foreground": "#a3be8c",
+          "background": "#2e3440",
+          "properties": {
+            "display_status": true
+          }
+        },
+        {
+          "type": "python",
+          "style": "plain",
+          "foreground": "#b48ead"
+        },
+        {
+          "type": "golang",
+          "style": "plain",
+          "foreground": "#d08770"
+        },
+        {
+          "type": "kubectl",
+          "style": "plain",
+          "foreground": "#5e81ac"
+        }
+      ]
+    }
+  ]
+}
+

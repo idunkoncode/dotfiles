@@ -1,0 +1,58 @@
+---
+- name: "{{ role_name }} | Add Google Chrome repository (openSUSE)"
+  ansible.builtin.zypper_repository:
+    name: google-chrome
+    repo: https://dl.google.com/linux/chrome/rpm/stable/x86_64
+    auto_import_keys: true
+    state: present
+  become: true
+  tags:
+    - browsers
+    - chrome
+
+- name: "{{ role_name }} | Install Google Chrome (openSUSE)"
+  community.general.zypper:
+    name: google-chrome-stable
+    state: present
+  become: true
+  tags:
+    - browsers
+    - chrome
+
+- name: "{{ role_name }} | Add Microsoft Edge repository (openSUSE)"
+  ansible.builtin.zypper_repository:
+    name: microsoft-edge
+    repo: https://packages.microsoft.com/yumrepos/edge
+    auto_import_keys: true
+    state: present
+  become: true
+  tags:
+    - browsers
+    - edge
+
+- name: "{{ role_name }} | Install Microsoft Edge (openSUSE)"
+  community.general.zypper:
+    name: microsoft-edge-stable
+    state: present
+  become: true
+  tags:
+    - browsers
+    - edge
+
+- name: "{{ role_name }} | Install Firefox (openSUSE)"
+  community.general.zypper:
+    name: firefox
+    state: present
+  become: true
+  tags:
+    - browsers
+    - firefox
+
+- name: "{{ role_name }} | Install Firefox Development Edition via Homebrew"
+  community.general.homebrew_cask:
+    name: firefox@developer-edition
+    state: present
+  tags:
+    - browsers
+    - firefox
+    - dev

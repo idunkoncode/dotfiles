@@ -1,0 +1,28 @@
+---
+- name: "{{ role_name }} | Install Ghostty via Homebrew (openSUSE)"
+  community.general.homebrew:
+    name: ghostty
+    state: present
+  tags:
+    - ghostty
+
+- name: "{{ role_name }} | Ensure .config directory exists"
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/.config"
+    state: directory
+    mode: "0755"
+
+- name: "{{ role_name }} | Ensure .config/ghostty directory exists"
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/.config/ghostty"
+    state: directory
+    mode: "0755"
+
+- name: "{{ role_name }} | Link Ghostty config from dotfiles"
+  ansible.builtin.file:
+    src: "{{ ansible_user_dir }}/.dotfiles/config/ghostty/config"
+    dest: "{{ ansible_user_dir }}/.config/ghostty/config"
+    state: link
+    force: true
+  tags:
+    - ghostty

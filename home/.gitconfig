@@ -1,0 +1,33 @@
+[user]
+	name = TechDufus
+	email = your.email@example.com
+	signingkey = /home/shinlevitra/.ssh/id_ed25519.pub
+[core]
+	editor = vim
+[color]
+	ui = auto
+[diff]
+	colorMoved = zebra
+[fetch]
+	prune = True
+[init]
+	defaultBranch = main
+[rerere]
+	enabled = True
+[pull]
+	ff = only
+	rebase = True
+[rebase]
+	autoStash = True
+[gpg]
+	format = ssh
+[commit]
+	gpgsign = True
+	template = /home/shinlevitra/.config/git/commit_template
+[tag]
+	gpgsign = True
+[gpg "ssh"]
+	allowedSignersFile = /home/shinlevitra/.config/git/allowed_signers
+[alias]
+	undo = reset HEAD~1 --mixed
+	br = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate

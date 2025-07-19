@@ -1,0 +1,69 @@
+---
+- name: "{{ role_name }} | Checking for Distribution Config: {{ ansible_distribution }}"
+  ansible.builtin.stat:
+    path: "{{ role_path }}/tasks/{{ ansible_distribution }}.yml"
+  register: distribution_config
+
+- name: "{{ role_name }} | Run Tasks: {{ ansible_distribution }}"
+  ansible.builtin.include_tasks: "{{ ansible_distribution }}.yml"
+  when: distribution_config.stat.exists
+
+- name: "{{ role_name }} | Check if running in GNOME session"
+  ansible.builtin.set_fact:
+    is_gnome_session: "{{ ansible_env.XDG_CURRENT_DESKTOP is defined and 'GNOME' in ansible_env.XDG_CURRENT_DESKTOP }}"
+
+- name: "{{ role_name }} | Configure GNOME settings"
+  block:
+    - name: "{{ role_name }} | Set GNOME Shell theme"
+      community.general.dconf:
+        key: "/org/gnome/shell/extensions/user-theme/name"
+        value: "'{{ gnome_shell_theme | default('Yaru-dark') }}'"
+
+    - name: "{{ role_name }} | Set GTK theme"
+      community.general.dconf:
+        key: "/org/gnome/desktop/interface/gtk-theme"
+        value: "'{{ gnome_gtk_theme | default('Yaru-dark') }}'"
+
+    - name: "{{ role_name }} | Set icon theme"
+      community.general.dconf:
+        key: "/org/gnome/desktop/interface/icon-theme"
+        value: "'{{ gnome_icon_theme | default('Yaru') }}'"
+
+    - name: "{{ role_name }} | Set cursor theme"
+      community.general.dconf:
+        key: "/org/gnome/desktop/interface/cursor-theme"
+        value: "'{{ gnome_cursor_theme | default('Yaru') }}'"
+
+    - name: "{{ role_name }} | Enable dark theme"
+      community.general.dconf:
+        key: "/org/gnome/desktop/interface/color-scheme"
+        value: "'prefer-dark'"
+
+    - name: "{{ role_name }} | Set wallpaper"
+      community.general.dconf:
+        key: "/org/gnome/desktop/background/picture-uri-dark"
+        value: "'file://{{ gnome_wallpaper | default('/usr/share/backgrounds/opensuse/openSUSE-default.xml') }}'"
+
+    - name: "{{ role_name }} | Configure terminal keybinding"
+      community.general.dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/binding"
+        value: "'<Super>Return'"
+
+    - name: "{{ role_name }} | Configure terminal command"
+      community.general.dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/command"
+        value: "'ghostty'"
+
+    - name: "{{ role_name }} | Configure terminal name"
+      community.general.dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/name"
+        value: "'Launch Terminal'"
+
+    - name: "{{ role_name }} | Enable custom keybindings"
+      community.general.dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
+        value: "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']"
+
+  when: is_gnome_session
+  tags:
+    - gnome

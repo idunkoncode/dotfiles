@@ -280,6 +280,58 @@ function fedora_setup() {
   fi
 }
 
+function opensuse_setup() {
+  # Install Homebrew first for better package management
+  if ! [ -x "$(command -v brew)" ]; then
+    __task "Installing Homebrew for Linux (This may take 5-10 minutes)"
+    _cmd "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+    # Add Homebrew to PATH for current session
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  fi
+
+  # Essential system packages via zypper
+  if ! [ -x "$(command -v git)" ]; then
+    __task "Installing Git via zypper"
+    _cmd "sudo zypper refresh"
+    _cmd "sudo zypper install -y git"
+  fi
+  
+  if ! [ -x "$(command -v curl)" ]; then
+    __task "Installing curl"
+    _cmd "sudo zypper install -y curl"
+  fi
+  
+  if ! [ -x "$(command -v gcc)" ]; then
+    __task "Installing build essentials for Homebrew"
+    _cmd "sudo zypper install -y gcc make"
+  fi
+
+  # Install Ansible via Homebrew for better version control
+  if ! [ -x "$(command -v ansible)" ]; then
+    __task "Installing Ansible via Homebrew"
+    _cmd "brew install ansible"
+  fi
+  
+  # Python3 and pip via zypper (system packages)
+  if ! [ -x "$(command -v python3)" ]; then
+    __task "Installing Python3"
+    _cmd "sudo zypper install -y python3"
+  fi
+  if ! [ -x "$(command -v pip3)" ]; then
+    __task "Installing Python3 Pip"
+    _cmd "sudo zypper install -y python3-pip"
+  fi
+  if ! rpm -q python3-argcomplete >/dev/null 2>&1; then
+    __task "Installing Python3 Argcomplete"
+    _cmd "sudo zypper install -y python3-argcomplete"
+    _cmd "sudo activate-global-python-argcomplete3 || true"
+  fi
+  if ! pip3 list | grep watchdog >/dev/null 2>&1; then
+    __task "Installing Python3 Watchdog"
+    _cmd "pip3 install --user watchdog"
+  fi
+}
+
 function macos_setup() {
   if ! [ -x "$(command -v brew)" ]; then
     __task "Installing Homebrew (This may take 5-10 minutes)"
@@ -333,7 +385,15 @@ function confirmVaultAccess() {
 detect_os() {
   if [ -f /etc/os-release ]; then
     source /etc/os-release
-    echo $ID
+    # Handle openSUSE variants
+    case "$ID" in
+      opensuse-tumbleweed|opensuse-leap|opensuse-slowroll|opensuse-microos|opensuse)
+        echo "opensuse"
+        ;;
+      *)
+        echo "$ID"
+        ;;
+    esac
   else
     echo $(uname -s | tr '[:upper:]' '[:lower:]')
   fi
@@ -362,21 +422,43 @@ print_banner
 dotfiles_os=$(detect_os)
 __task "Loading Setup for detected OS: $dotfiles_os"
 case $dotfiles_os in
-  ubuntu)
+  ubuntu|debian)
     ubuntu_setup
     ;;
-  arch)
+  arch|manjaro|endeavouros)
     arch_setup
     ;;
-  fedora)
+  fedora|centos|rhel|almalinux|rocky)
     fedora_setup
     ;;
   darwin)
     macos_setup
     ;;
+  opensuse)
+    opensuse_setup
+    ;;
   *)
-    __task "Unsupported OS"
-    _cmd "echo 'Unsupported OS'"
+    # Generic Linux fallback - try to detect package manager and install basics
+    if command -v apt-get >/dev/null 2>&1; then
+      echo "Detected Debian-based system, using Ubuntu setup"
+      ubuntu_setup
+    elif command -v pacman >/dev/null 2>&1; then
+      echo "Detected Arch-based system, using Arch setup"
+      arch_setup
+    elif command -v dnf >/dev/null 2>&1; then
+      echo "Detected RPM-based system, using Fedora setup"
+      fedora_setup
+    elif command -v zypper >/dev/null 2>&1; then
+      echo "Detected SUSE-based system, using openSUSE setup"
+      opensuse_setup
+    else
+      __task "Unsupported OS: $dotfiles_os"
+      echo "Your OS ($dotfiles_os) is not currently supported by this dotfiles setup."
+      echo "Detected OS: $dotfiles_os"
+      echo "No compatible package manager found."
+      echo "Please consider adding support for your OS or use a supported OS."
+      exit 1
+    fi
     ;;
 esac
 

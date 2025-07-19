@@ -1,0 +1,17 @@
+---
+- name: "{{ role_name }} | Install fish shell (openSUSE)"
+  community.general.zypper:
+    name: fish
+    state: present
+  become: true
+  tags:
+    - fish
+
+- name: "{{ role_name }} | Add fish shell to /etc/shells"
+  ansible.builtin.lineinfile:
+    path: /etc/shells
+    line: /usr/bin/fish
+    create: yes
+  become: true
+  tags:
+    - fish
