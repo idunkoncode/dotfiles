@@ -1,0 +1,33 @@
+---
+- name: "JaKoolit Hyprland | {{ ansible_distribution }} | Clone JaKoolit Arch-Hyprland repository"
+  ansible.builtin.git:
+    repo: "{{ jakoolit_hyprland_repo_url }}"
+    dest: "{{ jakoolit_hyprland_install_dir }}"
+    depth: 1
+    force: true
+    version: "{{ jakoolit_hyprland_branch | default('HEAD') }}"
+  when: jakoolit_hyprland_install | default(false)
+
+- name: "JaKoolit Hyprland | {{ ansible_distribution }} | Make install script executable"
+  ansible.builtin.file:
+    path: "{{ jakoolit_hyprland_install_dir }}/install.sh"
+    mode: '0755'
+  when: jakoolit_hyprland_install | default(false)
+
+- name: "JaKoolit Hyprland | {{ ansible_distribution }} | Display installation instructions"
+  ansible.builtin.debug:
+    msg: |
+      JaKoolit Hyprland has been downloaded to {{ jakoolit_hyprland_install_dir }}.
+      To complete the installation, run:
+      cd {{ jakoolit_hyprland_install_dir }}
+      ./install.sh
+  when: jakoolit_hyprland_install | default(false)
+
+- name: "JaKoolit Hyprland | {{ ansible_distribution }} | Run installation script"
+  ansible.builtin.command:
+    cmd: ./install.sh
+    chdir: "{{ jakoolit_hyprland_install_dir }}"
+  when: 
+    - jakoolit_hyprland_install | default(false)
+    - jakoolit_hyprland_auto_install | default(false)
+  become: true

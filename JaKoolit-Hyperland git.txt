@@ -1,0 +1,23 @@
+Fedora-Hyperland
+git clone --depth=1 https://github.com/JaKooLit/Fedora-Hyprland.git ~/Fedora-Hyprland
+cd ~/Fedora-Hyprland
+chmod +x install.sh
+./install.sh
+
+Arch-Hyperland
+git clone --depth=1 https://github.com/JaKooLit/Arch-Hyprland.git ~/Arch-Hyprland
+cd ~/Arch-Hyprland
+chmod +x install.sh
+./install.sh
+
+Ubuntu-Hyperland 25.04
+git clone --depth=1 -b 25.04 https://github.com/JaKooLit/Ubuntu-Hyprland.git ~/Ubuntu-Hyprland-25.04
+cd ~/Ubuntu-Hyprland-25.04
+chmod +x install.sh
+./install.sh
+
+Opensuse-Hyperland
+git clone --depth=1 https://github.com/JaKooLit/OpenSuse-Hyprland.git ~/OpenSuse-Hyprland
+cd ~/OpenSuse-Hyprland
+chmod +x install.sh
+./install.sh

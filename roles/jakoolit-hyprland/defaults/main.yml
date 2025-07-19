@@ -1,0 +1,53 @@
+---
+# JaKoolit Hyprland Configuration
+# Set to true to enable installation
+jakoolit_hyprland_install: false
+
+# Set to true to automatically run the install script after downloading
+jakoolit_hyprland_auto_install: false
+
+# Protocol options: 'https' or 'ssh'
+jakoolit_hyprland_protocol: 'https'
+
+# Repository configurations by distribution
+jakoolit_hyprland_repos:
+  https:
+    fedora: "https://github.com/JaKooLit/Fedora-Hyprland.git"
+    archlinux: "https://github.com/JaKooLit/Arch-Hyprland.git"
+    ubuntu: "https://github.com/JaKooLit/Ubuntu-Hyprland.git"
+    opensuse: "https://github.com/JaKooLit/OpenSuse-Hyprland.git"
+  ssh:
+    fedora: "git@github.com:JaKooLit/Fedora-Hyprland.git"
+    archlinux: "git@github.com:JaKooLit/Arch-Hyprland.git"
+    ubuntu: "git@github.com:JaKooLit/Ubuntu-Hyprland.git"
+    opensuse: "git@github.com:JaKooLit/OpenSuse-Hyprland.git"
+
+# Dynamic repository URL based on distribution and protocol
+jakoolit_hyprland_repo_url: >-
+  {%- set distro_map = {
+    'Fedora': 'fedora',
+    'Archlinux': 'archlinux', 
+    'Ubuntu': 'ubuntu',
+    'openSUSE Tumbleweed': 'opensuse'
+  } -%}
+  {%- set distro_key = distro_map.get(ansible_distribution, 'opensuse') -%}
+  {{ jakoolit_hyprland_repos[jakoolit_hyprland_protocol][distro_key] }}
+
+# Installation directory
+jakoolit_hyprland_install_dir: >-
+  {%- set distro_map = {
+    'Fedora': 'Fedora-Hyprland',
+    'Archlinux': 'Arch-Hyprland',
+    'Ubuntu': 'Ubuntu-Hyprland-25.04',
+    'openSUSE Tumbleweed': 'OpenSuse-Hyprland'
+  } -%}
+  {%- set dir_name = distro_map.get(ansible_distribution, 'OpenSuse-Hyprland') -%}
+  {{ ansible_env.HOME }}/{{ dir_name }}
+
+# Branch configuration (Ubuntu uses specific branch, others use HEAD)
+jakoolit_hyprland_branch: >-
+  {%- if ansible_distribution == 'Ubuntu' -%}
+  25.04
+  {%- else -%}
+  HEAD
+  {%- endif -%}

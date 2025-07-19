@@ -22,6 +22,7 @@ default_roles:
   - helm
   - jellyfin
   - jj
+  # - jakoolit-hyprland
   # - k8s
   - k9s
   - kitty
@@ -42,7 +43,7 @@ default_roles:
   - python
   - raycast
   # - ruby
-  # - rust
+  - rust
   - slides
   - spotify
   - ssh
@@ -109,3 +110,8 @@ gnome_wallpaper: "/usr/share/backgrounds/opensuse/openSUSE-default.xml"
 browsers_install_chrome: true
 browsers_install_edge: true
 browsers_install_firefox: true
+
+# JaKoolit Hyprland configuration
+jakoolit_hyprland_install: false
+jakoolit_hyprland_auto_install: false
+jakoolit_hyprland_protocol: 'https'  # Options: 'https' or 'ssh'
