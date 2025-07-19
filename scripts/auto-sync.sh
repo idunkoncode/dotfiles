@@ -4,6 +4,10 @@
 # This script checks for changes in the dotfiles directory, commits and pushes them,
 # and sends a notification when changes are pushed.
 
+# Set up environment for cron compatibility
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+export PATH
+
 DOTFILES_DIR="/home/shinlevitra/.dotfiles"
 LOG_FILE="/home/shinlevitra/.dotfiles-sync.log"
 
@@ -17,11 +21,39 @@ send_notification() {
     local title="$1"
     local message="$2"
     
+    # Set up environment for GUI notifications when running from cron
+    export DISPLAY=":0"
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+    
+    # Find the active X11 session for the user
+    local x11_user_session=$(who | grep "$(whoami)" | grep -E "\(:0\)" | head -1 | awk '{print $1}')
+    
+    if [ -z "$x11_user_session" ]; then
+        # If no active X11 session found, try to get the session from systemd
+        if command -v systemctl >/dev/null 2>&1; then
+            local user_session=$(systemctl --user show-environment | grep DISPLAY | cut -d'=' -f2)
+            if [ -n "$user_session" ]; then
+                export DISPLAY="$user_session"
+            fi
+        fi
+    fi
+    
     # Try different notification methods based on what's available
     if command -v notify-send >/dev/null 2>&1; then
-        notify-send "$title" "$message" --icon=dialog-information
+        # Try to send notification with error handling
+        if ! notify-send "$title" "$message" --icon=dialog-information 2>/dev/null; then
+            # If notify-send fails, try gdbus method (for GNOME)
+            if command -v gdbus >/dev/null 2>&1; then
+                gdbus call --session \
+                    --dest org.freedesktop.Notifications \
+                    --object-path /org/freedesktop/Notifications \
+                    --method org.freedesktop.Notifications.Notify \
+                    "Dotfiles" 0 "dialog-information" "$title" "$message" "[]" "{}" 5000 \
+                    2>/dev/null || true
+            fi
+        fi
     elif command -v zenity >/dev/null 2>&1; then
-        zenity --notification --text="$title: $message"
+        zenity --notification --text="$title: $message" 2>/dev/null || true
     fi
     
     # Also log the notification
