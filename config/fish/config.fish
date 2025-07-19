@@ -18,6 +18,14 @@ if test -d $HOME/.cargo/bin
     fish_add_path $HOME/.cargo/bin
 end
 
+# SSH Agent setup
+if not pgrep -x ssh-agent > /dev/null
+    ssh-agent -c > ~/.ssh/ssh-agent.fish
+end
+if test -f ~/.ssh/ssh-agent.fish
+    source ~/.ssh/ssh-agent.fish > /dev/null
+end
+
 # Initialize oh-my-posh prompt if available (preferred)
 if command -v oh-my-posh >/dev/null
     oh-my-posh init fish --config ~/.config/catppuccin_mocha.omp.json | source
